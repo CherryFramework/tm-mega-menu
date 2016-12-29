@@ -276,6 +276,7 @@ if ( !class_exists( 'tm_mega_menu' ) ) {
 			require_once( 'admin/includes/class-tm-mega-menu-options.php' );
 			require_once( 'admin/includes/class-tm-mega-menu-item-manager.php' );
 			require_once( 'admin/includes/class-tm-mega-menu-walker.php' );
+			require_once( 'admin/includes/class-cherry-update/class-cherry-plugin-update.php' );
 
 			new tm_mega_menu_item_manager();
 			new tm_mega_menu_widget_manager();
@@ -284,6 +285,13 @@ if ( !class_exists( 'tm_mega_menu' ) ) {
 			add_action( 'admin_init', array( $this, 'tm_megamenu_settings_api_init' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'tm_megamenu_admin_scripts' ) );
 			add_filter( 'wp_edit_nav_menu_walker', array( $this, 'megamenu_edit_nav_menu_walker' ), 10, 2 );
+
+			$updater = new Cherry_Plugin_Update();
+			$updater->init( array(
+				'version'         => TM_MEGA_MENU_VERSION,
+				'slug'            => TM_MEGA_MENU_SLUG,
+				'repository_name' => TM_MEGA_MENU_SLUG,
+			) );
 		}
 
 		/**
