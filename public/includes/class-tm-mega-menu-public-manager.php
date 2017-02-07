@@ -205,12 +205,12 @@ if ( ! class_exists( 'tm_mega_menu_public_manager' ) ) {
 
 			foreach ( $items as $item ) {
 
-				if( ( false !== $key = array_search( 'menu-item-has-children', $item->classes ) ) ) {
+				if ( ( false !== $key = array_search( 'menu-item-has-children', $item->classes ) ) ) {
 					unset( $item->classes[ $key ] );
 				}
 
-
-				$saved_settings = array_filter( ( array ) get_post_meta( $item->ID, '_tm_mega_menu', true ) );
+				$item_id        = apply_filters( 'wpml_element_trid', false, $item->ID, 'post_nav_menu_item' );
+				$saved_settings = array_filter( (array) get_post_meta( $item_id, '_tm_mega_menu', true ) );
 
 				$item->megamenu_settings = wp_parse_args( $saved_settings, array(
 					'type'     => '',
@@ -222,7 +222,7 @@ if ( ! class_exists( 'tm_mega_menu_public_manager' ) ) {
 					continue;
 				}
 
-				$panel_widgets = $widget_manager->get_widgets_for_menu_id( $item->ID );
+				$panel_widgets = $widget_manager->get_widgets_for_menu_id( $item_id );
 
 				if ( empty( $panel_widgets ) ) {
 					continue;
