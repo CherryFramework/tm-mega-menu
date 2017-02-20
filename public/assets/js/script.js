@@ -242,10 +242,10 @@
 		var openOnClick = function() {
 
 			var parents = 'li' + parentMegaClass,
-				target  = 'a > label',
-				items   = parents + ' > ' + target + ', ' + parents + ' > .menu-link-wrapper > ' + target;
+				target  = 'a',
+				items   = parents + ' > ' + target + ', ' + parents + ' > .menu-link-wrapper > ' + target + ', li.super-guacamole__menu' + ' > ' + target;
 
-			menu.on( 'click.megaMenu', items, panelTriggerOnClick );
+			$( document ).on( 'click.megaMenu', items, panelTriggerOnClick );
 		};
 
 		var closeAllPanels = function( event ) {
@@ -258,18 +258,22 @@
 		var panelTriggerOnClick = function( event ) {
 
 			var $this  = $( event.target ),
-				parent = $this.closest( 'li' );
+				parent = $this.closest( 'li' ),
+				anchor = $( '> a', parent );
 
-			/*if ( $this.hasClass( 'fa-angle-down' ) ) {
-				$this.removeClass( 'fa-angle-down' ).addClass( 'fa-angle-up' );
-			} else {
-				$this.removeClass( 'fa-angle-up' ).addClass( 'fa-angle-down' );
-			}*/
+			if ( $this.hasClass( 'mega-menu-arrow' ) || $this.hasClass( 'sub-menu-toggle' ) ) {
 
-			if ( parent.hasClass( hideMobileClass ) && menu.hasClass( mobileOnClass ) ) {
-				return;
+				event.stopPropagation();
+				event.preventDefault();
+
+				if ( parent.hasClass( hideMobileClass ) && menu.hasClass( mobileOnClass ) ) {
+					return;
+				}
+
+				hidePanel( parent.siblings( '.' + hoverClass ).children( 'a' ) );
+				showPanel( anchor );
+
 			}
-
 		};
 
 		var openOnHover = function() {
@@ -322,6 +326,7 @@
 
 				if ( isTouchDevice ) {
 					openOnClick();
+					$( document ).on( 'click', 'body', closeAllPanels );
 				} else {
 					openOnHover();
 				}
