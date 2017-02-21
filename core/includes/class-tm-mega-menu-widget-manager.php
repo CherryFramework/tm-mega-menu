@@ -265,8 +265,12 @@ class tm_mega_menu_widget_manager {
 	 * @param int $menu_item_id
 	 */
 	public function get_widgets_for_menu_id( $menu_item_id ) {
-		$widgets      = array();
-		$menu_item_id = apply_filters( 'wpml_element_trid', false, $menu_item_id, 'post_nav_menu_item' );
+
+		$widgets = array();
+
+		if ( class_exists( 'SitePress' ) ) {
+			$menu_item_id = apply_filters( 'wpml_element_trid', false, $menu_item_id, 'post_nav_menu_item' );
+		}
 
 		if ( $mega_menu_widgets = $this->get_sidebar_widgets() ) {
 
