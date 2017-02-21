@@ -209,7 +209,12 @@ if ( ! class_exists( 'tm_mega_menu_public_manager' ) ) {
 					unset( $item->classes[ $key ] );
 				}
 
-				$item_id        = apply_filters( 'wpml_element_trid', false, $item->ID, 'post_nav_menu_item' );
+				if ( class_exists( 'SitePress' ) ) {
+					$item_id = apply_filters( 'wpml_element_trid', false, $item->ID, 'post_nav_menu_item' );
+				} else {
+					$item_id = $item->ID;
+				}
+
 				$saved_settings = array_filter( (array) get_post_meta( $item_id, '_tm_mega_menu', true ) );
 
 				$item->megamenu_settings = wp_parse_args( $saved_settings, array(

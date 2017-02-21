@@ -145,7 +145,14 @@ if ( ! class_exists( 'tm_mega_menu_item_manager' ) ) {
 			if ( isset( $_REQUEST[ 'menu_item_id' ] ) ) {
 
 				$this->menu_item_id = absint( $_REQUEST[ 'menu_item_id' ] );
-				$menu_item_id       = apply_filters( 'wpml_element_trid', false, $this->menu_item_id, 'post_nav_menu_item' );
+
+				if ( class_exists( 'SitePress' ) ) {
+					$menu_item_id = apply_filters(
+						'wpml_element_trid', false, $this->menu_item_id, 'post_nav_menu_item'
+					);
+				} else {
+					$menu_item_id = $this->menu_item_id;
+				}
 
 				$menu_settings = array_filter( (array) get_post_meta( $menu_item_id, '_tm_mega_menu', true ) );
 
