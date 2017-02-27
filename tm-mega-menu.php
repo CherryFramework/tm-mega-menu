@@ -2,7 +2,7 @@
 /**
  * Plugin Name: TM Mega Menu
  * Description: A megamenu management plugin for WordPress.
- * Version:     1.1.2
+ * Version:     1.1.3
  * Author:      TemplateMonster
  * Author URL:  http://www.templatemonster.com/wordpress-themes.php
  * Text Domain: tm-mega-menu
@@ -25,7 +25,7 @@ if ( !class_exists( 'tm_mega_menu' ) ) {
 		 * @var   string
 		 * @since 1.0.0
 		 */
-		public $version = '1.1.2';
+		public $version = '1.1.3';
 
 		/**
 		 * @var   string
@@ -307,7 +307,18 @@ if ( !class_exists( 'tm_mega_menu' ) ) {
 
 			$menu_locations = get_nav_menu_locations();
 
-			if( is_array( $menu_locations ) && $menu_location = array_search( $menu_id, $menu_locations ) ) {
+			$allowed_menus = get_registered_nav_menus();
+			$allowed_menus = array_keys( $allowed_menus );
+
+			$allowed_locations = array();
+
+			foreach ( $allowed_menus as $menu ) {
+				if ( isset( $menu_locations[ $menu ] ) ) {
+					$allowed_locations[ $menu ] = $menu_locations[ $menu ];
+				}
+			}
+
+			if( is_array( $allowed_locations ) && $menu_location = array_search( $menu_id, $allowed_locations ) ) {
 
 				$mega_menu_location = ( array ) get_option( 'tm-mega-menu-location', array() );
 
