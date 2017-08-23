@@ -28,7 +28,6 @@ class tm_mega_menu_widget_manager {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-
 		add_action( 'init', array( $this, 'register_sidebar' ) );
 
 		add_action( 'wp_ajax_tm_mega_menu_edit_widget',    array( $this, 'show_widget_form' ) );
@@ -39,6 +38,32 @@ class tm_mega_menu_widget_manager {
 		add_action( 'wp_ajax_tm_mega_menu_move_widget',    array( $this, 'move_widget' ) );
 
 		add_filter( 'widget_update_callback', array( $this, 'persist_tm_mega_menu_widget_settings' ), 10, 4 );
+
+		// Compatibility with WordPress 4.8 (text and media Widgets)
+		add_action( 'admin_footer-nav-menus.php', array( $this, 'admin_print_footer_scripts' ) );
+		add_action( 'admin_print_scripts-nav-menus.php', array( $this, 'admin_print_scripts' ) );
+		add_action( 'admin_print_styles-nav-menus.php', array( $this, 'admin_print_styles' ) );
+	}
+
+	/**
+	 * Print the widgets.php admin scripts on the nav-menus.php page.
+	 */
+	public function admin_print_footer_scripts() {
+		do_action( 'admin_footer-widgets.php' );
+	}
+
+	/**
+	 * Print the widgets.php admin scripts on the nav-menus.php page.
+	 */
+	public function admin_print_scripts() {
+		do_action( 'admin_print_scripts-widgets.php' );
+	}
+
+	/**
+	 * Print the widgets.php admin styles on the nav-menus.php page.
+	 */
+	public function admin_print_styles() {
+		do_action( 'admin_print_styles-widgets.php' );
 	}
 
 	/**
@@ -399,14 +424,16 @@ class tm_mega_menu_widget_manager {
 		?>
 		<form method='post'>
 			<input type='hidden' name='action' value='tm_mega_menu_save_widget'>
-			<input type='hidden' name='id_base' value='<?php echo $id_base; ?>'>
-			<input type='hidden' name='widget_id' value='<?php echo $widget_id ?>'>
+			<input type='hidden' name='id_base' class="id_base" value='<?php echo $id_base; ?>'>
+			<input type='hidden' name='widget_id' class="widget-id" value='<?php echo $widget_id ?>'>
 			<input type='hidden' name='_wpnonce' value='<?php echo $nonce ?>'>
+			<div class="widget-content">
 			<?php
 				if ( is_callable( $control[ 'callback' ] ) ) {
 					call_user_func_array( $control[ 'callback' ], $control[ 'params' ] );
 				}
 			?>
+			</div>
 			<div class='widget-controls'>
 				<a class='delete' href='#delete'>Delete</a> |
 				<a class='close' href='#close'>Close</a>
@@ -494,7 +521,7 @@ class tm_mega_menu_widget_manager {
 			<span class="widget-cols-counter"><b>' . $cols . '</b>/<i>' . $total_cols . '</i></span>
 			</div>
 			<a class="widget-option widget-edit"></a></div>
-		</div><div class="widget-inner"></div></div>';
+		</div><div class="widget-inner widget-inside"></div></div>';
 	}
 
 	/**
